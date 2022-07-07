@@ -20,4 +20,7 @@ RUN CGO_ENABLED=1 make install
 
 WORKDIR /app
 
+EXPOSE 6697
+EXPOSE 443
+
 CMD ["soju", "-config", "/app/soju.config"]
