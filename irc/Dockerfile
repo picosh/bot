@@ -1,26 +1,25 @@
-FROM golang:1.18-alpine3.16
-
-RUN mkdir -p /app/db
+FROM golang:1.18-alpine as builder
 
 WORKDIR /app
 
-RUN apk --update upgrade
-RUN apk add git make scdoc sqlite build-base
-# See http://stackoverflow.com/questions/34729748/installed-go-binary-not-found-in-path-on-alpine-linux-docker
-RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
+RUN apk add --no-cache git sqlite-libs sqlite-dev build-base
 
-RUN git clone https://git.sr.ht/~emersion/soju
-
-ADD ./soju.config /app/soju.config
+RUN git clone https://github.com/emersion/soju
 
 WORKDIR /app/soju
 
-RUN CGO_ENABLED=1 make
-RUN CGO_ENABLED=1 make install
+ENV CGO_ENABLED=1
+ENV LDFLAGS="-linkmode external -extldflags -static"
+
+RUN go build -ldflags "$LDFLAGS" -tags sqlite_omit_load_extension ./cmd/soju
+RUN go build -ldflags "$LDFLAGS" -tags sqlite_omit_load_extension ./cmd/sojuctl
+
+FROM alpine
 
 WORKDIR /app
 
-EXPOSE 6697
-EXPOSE 443
+ADD ./soju.config .
+COPY --from=builder /app/soju/soju .
+COPY --from=builder /app/soju/sojuctl .
 
-CMD ["soju", "-config", "/app/soju.config"]
+ENTRYPOINT ["/app/soju", "-config", "/app/soju.config"]
