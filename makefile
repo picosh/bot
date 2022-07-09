@@ -6,6 +6,9 @@ push-irc:
 	docker push neurosnap/erock-irc
 .PHONY: push
 
+bp-irc: build-irc push-irc
+.PHONY: bp-irc
+
 build-chat:
 	docker build -t neurosnap/erock-chat -f ./chat/Dockerfile ./chat
 .PHONY: build-chat
@@ -14,11 +17,19 @@ push-chat:
 	docker push neurosnap/erock-chat
 .PHONY: push-chat
 
-build: build-irc build-chat
-.PHONY: build
+bp-chat: build-chat push-chat
+.PHONY: bp-chat
 
-push: push-irc push-chat
-.PHONY: push
+build-bot:
+	docker build -t neurosnap/erock-bot -f ./bot/Dockerfile ./bot
+.PHONY: build-bot
 
-bp: build push
+push-bot:
+	docker push neurosnap/erock-bot
+.PHONY: push-bot
+
+bp-bot: build-bot push-bot
+.PHONY: bp-bot
+
+bp: bp-irc bp-chat bp-bot
 .PHONY: bp

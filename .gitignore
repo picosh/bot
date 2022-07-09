@@ -1,0 +1,4 @@
+.envrc
+*.swp
+*.log
+bot/bot
