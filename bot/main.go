@@ -62,6 +62,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	// remove default channels from bot since I'm connecting to a bouncer
+	bot.Channels = []string{}
 
 	go func() {
 		for {
