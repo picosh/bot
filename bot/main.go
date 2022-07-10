@@ -58,7 +58,7 @@ func main() {
 		bot.Password = ircPass
 	}
 
-	bot, err := hbot.NewBot("irc.erock.io:6697", "erock/irc.libera.chat", saslOption)
+	bot, err := hbot.NewBot("irc.erock.io:6697", "erock/irc.libera.chat@bot", saslOption)
 	if err != nil {
 		panic(err)
 	}
