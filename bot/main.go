@@ -20,7 +20,7 @@ var (
 
 func resetTimer() time.Time {
 	return time.Now().Add(
-		time.Minute * time.Duration(1),
+		time.Minute * time.Duration(10),
 	)
 }
 
