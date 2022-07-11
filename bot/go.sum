@@ -13,8 +13,8 @@ github.com/mattn/go-colorable v0.1.6 h1:6Su7aK7lXmJ/U79bYtBjLNaha4Fs1Rg9plHpcH+v
 github.com/mattn/go-colorable v0.1.6/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
 github.com/mattn/go-isatty v0.0.12 h1:wuysRhFDzyxgEmMf5xjvJ2M9dZoWAXNNr5LSBS7uHXY=
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
-github.com/whyrusleeping/hellabot v0.0.0-20220131094808-3d595078da57 h1:sN+pknnqQso850cwopazXsLehxEFbQvHGmIHDUmC/v8=
-github.com/whyrusleeping/hellabot v0.0.0-20220131094808-3d595078da57/go.mod h1:g3f61CcN5csyM0R/e0xF2FX8gKiuGHREi3ostG6FWlQ=
+github.com/neurosnap/hellabot v0.0.0-20220711133753-b380215d0a2a h1:rV6y5ffgnifJIfQtopay8Mi7I+m+B5/7TC6s89DiZ48=
+github.com/neurosnap/hellabot v0.0.0-20220711133753-b380215d0a2a/go.mod h1:YkfqvA/g0qJlzmmB360VFHThwoBpCvNMYZQ8Gg34uE8=
 golang.org/x/sys v0.0.0-20200116001909-b77594299b42/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae h1:/WDfKMnPU+m5M4xB+6x4kaepxRw6jWvR5iDRdvjHgy8=
 golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=

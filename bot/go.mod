@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/emersion/go-sasl v0.0.0-20211008083017-0b9dcfb154ac
 	github.com/emersion/go-smtp v0.15.0
-	github.com/whyrusleeping/hellabot v0.0.0-20220131094808-3d595078da57
+	github.com/neurosnap/hellabot v0.0.0-20220711133753-b380215d0a2a
 	gopkg.in/inconshreveable/log15.v2 v2.0.0-20200109203555-b30bc20e4fd1
 )
 

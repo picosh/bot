@@ -8,7 +8,7 @@ import (
 
 	"github.com/emersion/go-sasl"
 	"github.com/emersion/go-smtp"
-	hbot "github.com/whyrusleeping/hellabot"
+	hbot "github.com/neurosnap/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -64,6 +64,8 @@ func main() {
 	}
 	// remove default channels from bot since I'm connecting to a bouncer
 	bot.Channels = []string{}
+	// extend ping timeout so quiet irc setups don't keep disconnecting
+	// bot.PingTimeout = 4 * time.Hour
 
 	go func() {
 		for {
