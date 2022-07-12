@@ -65,7 +65,7 @@ func main() {
 	// remove default channels from bot since I'm connecting to a bouncer
 	bot.Channels = []string{}
 	// extend ping timeout so quiet irc setups don't keep disconnecting
-	// bot.PingTimeout = 4 * time.Hour
+	bot.PingTimeout = 4 * time.Hour
 
 	go func() {
 		for {
