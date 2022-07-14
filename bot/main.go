@@ -105,7 +105,18 @@ func main() {
 				}
 			}
 
-			return isAway && !denied && (mentioned || dmed)
+			deniedContent := false
+			for _, to := range dms {
+				// these are weird edge cases where the content of the message is identical
+				// to the `to` which means it was a JOIN event or
+				// `from` which is a weird event that triggers when I click on a DM
+				if m.Content == to || m.Content == m.From {
+					deniedContent = true
+					break
+				}
+			}
+
+			return isAway && !denied && !deniedContent && (mentioned || dmed)
 		},
 		Action: func(b *hbot.Bot, m *hbot.Message) bool {
 			bot.Info(fmt.Sprintf("NOTIFY ACTION FROM (%s) TO (%s)", m.From, m.To))
