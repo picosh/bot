@@ -15,7 +15,7 @@ import (
 var (
 	keywords = []string{"erock", "pico.sh", "picosh"}
 	dms      = []string{"erock", "#pico.sh"}
-	deny     = []string{"erock", "SaslServ", "NickServ"}
+	deny     = []string{"erock", "SaslServ", "NickServ", "irc.erock.io"}
 )
 
 func resetTimer() time.Time {
