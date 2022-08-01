@@ -15,7 +15,7 @@ import (
 var (
 	keywords = []string{"erock", "pico.sh", "picosh"}
 	dms      = []string{"erock", "#pico.sh"}
-	deny     = []string{"erock", "SaslServ", "NickServ", "irc.erock.io"}
+	deny     = []string{"erock", "SaslServ", "NickServ", "ChanServ", "irc.erock.io"}
 )
 
 func resetTimer() time.Time {
@@ -44,6 +44,23 @@ func send(auth sasl.Client, subject string, body string) {
 	}
 }
 
+func msgToEmail(m hbot.Message) string {
+	channel := m.From
+	if strings.Contains(m.To, "#") {
+		channel = m.To
+	}
+
+	body := fmt.Sprintf(
+		"%s\r\n---\r\nirc://irc.libera.chat/%s\r\nfrom: %s\r\nto: %s",
+		m.Content,
+		channel,
+		m.From,
+		m.To,
+	)
+
+	return body
+}
+
 func main() {
 	ircPass := os.Getenv("IRC_PASS")
 	smtPass := os.Getenv("IRC_SMTP_PASS")
@@ -51,6 +68,7 @@ func main() {
 
 	timer := resetTimer()
 	isAway := false
+	queue := []hbot.Message{}
 
 	saslOption := func(bot *hbot.Bot) {
 		bot.SASL = true
@@ -76,6 +94,22 @@ func main() {
 				// bot.Send("AWAY idle")
 			}
 			time.Sleep(15 * time.Second)
+		}
+	}()
+
+	go func() {
+		for {
+			if len(queue) > 0 {
+				subject := fmt.Sprintf("%d messages -- irc bot", len(queue))
+				body := ""
+				for _, m := range queue {
+					body += fmt.Sprintf("%s\r\n\r\n", msgToEmail(m))
+				}
+				send(auth, subject, body)
+				// reset queue
+				queue = make([]hbot.Message, 0)
+			}
+			time.Sleep(5 * time.Minute)
 		}
 	}()
 
@@ -120,21 +154,7 @@ func main() {
 		},
 		Action: func(b *hbot.Bot, m *hbot.Message) bool {
 			bot.Info(fmt.Sprintf("NOTIFY ACTION FROM (%s) TO (%s)", m.From, m.To))
-			subject := fmt.Sprintf("%s - irc bot", m.From)
-
-			channel := m.From
-			if strings.Contains(m.To, "#") {
-				channel = m.To
-			}
-
-			body := fmt.Sprintf(
-				"%s\r\n---\r\nirc://irc.libera.chat/%s\r\nfrom: %s\r\nto: %s",
-				m.Content,
-				channel,
-				m.From,
-				m.To,
-			)
-			send(auth, subject, body)
+			queue = append(queue, *m)
 			return false
 		},
 	}
