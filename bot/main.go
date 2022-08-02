@@ -165,6 +165,8 @@ func main() {
 		},
 		Action: func(b *hbot.Bot, m *hbot.Message) bool {
 			timer = resetTimer()
+			// we're looking at the messages so clear the queue
+			queue = make([]hbot.Message, 0)
 			if isAway {
 				bot.Info("MARKING USER AS ACTIVE")
 				// this removes the away status
