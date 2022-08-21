@@ -41,6 +41,10 @@ func main() {
 	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
 	bot.Logger.SetHandler(logHandler)
 
+	http.HandleFunc("/", func(resp http.ResponseWriter, req *http.Request) {
+		resp.Write([]byte("pong"))
+	})
+
 	http.HandleFunc("/push", func(resp http.ResponseWriter, req *http.Request) {
 		resp.Write([]byte("ok"))
 		fmt.Println("received request")
