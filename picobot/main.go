@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -9,6 +10,18 @@ import (
 	hbot "github.com/neurosnap/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
+
+type RepoUpdate struct {
+	Data struct {
+		Webhook struct {
+			Repository struct {
+				Name    string `json:"name"`
+				ShortID string `json:"shortId"`
+				Message string `json:"message"`
+			} `json:"repository"`
+		} `json:"webhook"`
+	} `json:"data"`
+}
 
 func main() {
 	ircPass := os.Getenv("IRC_PICO_PASS")
@@ -46,9 +59,19 @@ func main() {
 	})
 
 	http.HandleFunc("/push", func(resp http.ResponseWriter, req *http.Request) {
-		resp.Write([]byte("ok"))
-		fmt.Println("received request")
-		bot.Msg("erock", "git commit")
+		var ru RepoUpdate
+		err := json.NewDecoder(req.Body).Decode(&ru)
+		if err != nil {
+			http.Error(resp, err.Error(), http.StatusBadRequest)
+			return
+		}
+		resp.Write([]byte("sending message to channel"))
+		url := fmt.Sprintf(
+			"https://git.sr.ht/~erock/%s/commit/%s",
+			ru.Data.Webhook.Repository.Name,
+			ru.Data.Webhook.Repository.ShortID,
+		)
+		bot.Msg("erock", fmt.Sprintf("%s -- %s", url, ru.Data.Webhook.Repository.Message))
 	})
 
 	go func() {
