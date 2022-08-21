@@ -2,9 +2,9 @@
 
 script='mutation {
   createWebhook(config: {
-    url: "https://picobot.erock.io/push"
+    url: \"https://picobot.erock.io/push\"
     events: [REPO_UPDATE]
-    query: """
+    query: \"\"\"
         query {
             webhook {
                 uuid
@@ -13,7 +13,7 @@ script='mutation {
                 ... on RepositoryEvent {
                     repository {
                         name,
-                        revparse_single(revspec: "HEAD") {
+                        revparse_single(revspec: \"HEAD\") {
                             shortId,
                             author { name },
                             committer { name },
@@ -23,10 +23,16 @@ script='mutation {
                 }
             }
         }
-    """
+    \"\"\"
   }) { id }
 }'
-script="$(echo $script)"   # the query should be a one-liner, without newlines
+
+# to confirm it worked
+# script='query {
+# 	userWebhooks { results { id, url } }
+# }'
+
+script="$(echo $script)" # the query should be a one-liner, without newlines
 curl -i \
     -H 'Content-Type: application/json' \
     --oauth2-bearer "$PAT" \
