@@ -19,9 +19,15 @@ type RepoUpdate struct {
 			Repository struct {
 				Name string `json:"name"`
 				Rev  struct {
-					ID      string `json:"id"`
-					ShortID string `json:"shortId"`
-					Message string `json:"message"`
+					ID        string `json:"id"`
+					ShortID   string `json:"shortId"`
+					Message   string `json:"message"`
+					Committer struct {
+						Name string `json:"name"`
+					} `json:"committer"`
+					Author struct {
+						Name string `json:"name"`
+					} `json:"author"`
 				} `json:"revparse_single"`
 			} `json:"repository"`
 		} `json:"webhook"`
@@ -85,7 +91,12 @@ func main() {
 			ru.Data.Webhook.Repository.Name,
 			ru.Data.Webhook.Repository.Rev.ID,
 		)
-		bot.Msg("erock", fmt.Sprintf("%s -- %s", url, ru.Data.Webhook.Repository.Rev.Message))
+		bot.Msg("erock", fmt.Sprintf(
+			"[sr.ht] %s -- (%s) %s",
+			url,
+			ru.Data.Webhook.Repository.Rev.Committer.Name,
+			ru.Data.Webhook.Repository.Rev.Message,
+		))
 	})
 
 	go func() {
