@@ -14,6 +14,7 @@ script='mutation {
                     repository {
                         name,
                         revparse_single(revspec: \"HEAD\") {
+                            id,
                             shortId,
                             author { name },
                             committer { name },
@@ -30,6 +31,11 @@ script='mutation {
 # to confirm it worked
 # script='query {
 # 	userWebhooks { results { id, url } }
+# }'
+
+# delete webhook
+# script='mutation {
+#     deleteWebhook(id: 13) { id }
 # }'
 
 script="$(echo $script)" # the query should be a one-liner, without newlines

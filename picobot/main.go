@@ -14,10 +14,15 @@ import (
 type RepoUpdate struct {
 	Data struct {
 		Webhook struct {
+			Date       string `json:"date"`
+			Event      string `json:"event"`
 			Repository struct {
-				Name    string `json:"name"`
-				ShortID string `json:"shortId"`
-				Message string `json:"message"`
+				Name string `json:"name"`
+				Rev  struct {
+					ID      string `json:"id"`
+					ShortID string `json:"shortId"`
+					Message string `json:"message"`
+				} `json:"revparse_single"`
 			} `json:"repository"`
 		} `json:"webhook"`
 	} `json:"data"`
@@ -59,16 +64,16 @@ func main() {
 	})
 
 	http.HandleFunc("/push", func(resp http.ResponseWriter, req *http.Request) {
-		// var ru RepoUpdate
-
-		var j interface{}
-		err = json.NewDecoder(req.Body).Decode(&j)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("%s", j)
-
 		/*
+			var j interface{}
+			err = json.NewDecoder(req.Body).Decode(&j)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("%s", j)
+		*/
+
+		var ru RepoUpdate
 		err := json.NewDecoder(req.Body).Decode(&ru)
 		if err != nil {
 			http.Error(resp, err.Error(), http.StatusBadRequest)
@@ -78,10 +83,9 @@ func main() {
 		url := fmt.Sprintf(
 			"https://git.sr.ht/~erock/%s/commit/%s",
 			ru.Data.Webhook.Repository.Name,
-			ru.Data.Webhook.Repository.ShortID,
+			ru.Data.Webhook.Repository.Rev.ID,
 		)
-		bot.Msg("erock", fmt.Sprintf("%s -- %s", url, ru.Data.Webhook.Repository.Message))
-		*/
+		bot.Msg("erock", fmt.Sprintf("%s -- %s", url, ru.Data.Webhook.Repository.Rev.Message))
 	})
 
 	go func() {
