@@ -59,7 +59,16 @@ func main() {
 	})
 
 	http.HandleFunc("/push", func(resp http.ResponseWriter, req *http.Request) {
-		var ru RepoUpdate
+		// var ru RepoUpdate
+
+		var j interface{}
+		err = json.NewDecoder(req.Body).Decode(&j)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%s", j)
+
+		/*
 		err := json.NewDecoder(req.Body).Decode(&ru)
 		if err != nil {
 			http.Error(resp, err.Error(), http.StatusBadRequest)
@@ -72,6 +81,7 @@ func main() {
 			ru.Data.Webhook.Repository.ShortID,
 		)
 		bot.Msg("erock", fmt.Sprintf("%s -- %s", url, ru.Data.Webhook.Repository.Message))
+		*/
 	})
 
 	go func() {
