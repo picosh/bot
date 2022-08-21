@@ -31,5 +31,16 @@ push-bot:
 bp-bot: build-bot push-bot
 .PHONY: bp-bot
 
-bp: bp-irc bp-chat bp-bot
+build-picobot:
+	docker build -t neurosnap/pico-bot -f ./picobot/Dockerfile ./picobot
+.PHONY: build-picobot
+
+push-picobot:
+	docker push neurosnap/pico-bot
+.PHONY: push-picobot
+
+bp-picobot: build-picobot push-picobot
+.PHONY: bp-picobot
+
+bp: bp-irc bp-chat bp-bot bp-picobot
 .PHONY: bp

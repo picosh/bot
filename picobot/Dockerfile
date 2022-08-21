@@ -12,6 +12,6 @@ RUN apt-get update && apt-get install -y ca-certificates
 
 WORKDIR /app
 
-COPY --from=builder /app/bot .
+COPY --from=builder /app/picobot .
 
-ENTRYPOINT ["/app/bot"]
+ENTRYPOINT ["/app/picobot"]
