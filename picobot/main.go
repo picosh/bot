@@ -8,8 +8,20 @@ import (
 	"time"
 
 	hbot "github.com/neurosnap/hellabot"
+	"golang.org/x/exp/slices"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
+
+var allowRepos = []string{
+	"pico",
+	"pico-ops",
+	"prose-official-blog",
+	"pico.sh",
+	"lists-official-blog",
+	"erock-irc",
+}
+var channels = []string{"#pico.sh"}
+var toChannel = "#pico.sh"
 
 type RepoUpdate struct {
 	Data struct {
@@ -48,7 +60,7 @@ func main() {
 	}
 
 	opts := func(bot *hbot.Bot) {
-		bot.Channels = []string{"#pico.sh"}
+		bot.Channels = channels
 		// extend ping timeout so quiet irc setups don't keep disconnecting
 		bot.PingTimeout = 4 * time.Hour
 	}
@@ -85,13 +97,21 @@ func main() {
 			http.Error(resp, err.Error(), http.StatusBadRequest)
 			return
 		}
+
+		repoName := ru.Data.Webhook.Repository.Name
+		if !slices.Contains(allowRepos, repoName) {
+			resp.Write([]byte(fmt.Sprintf("repo is not in allowlist (%s), skipping", repoName)))
+			return
+		}
+
 		resp.Write([]byte("sending message to channel"))
+
 		url := fmt.Sprintf(
 			"https://git.sr.ht/~erock/%s/commit/%s",
-			ru.Data.Webhook.Repository.Name,
+			repoName,
 			ru.Data.Webhook.Repository.Rev.ID,
 		)
-		bot.Msg("erock", fmt.Sprintf(
+		bot.Msg(toChannel, fmt.Sprintf(
 			"[sr.ht] %s -- (%s) %s",
 			url,
 			ru.Data.Webhook.Repository.Rev.Committer.Name,
