@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	hbot "github.com/neurosnap/hellabot"
@@ -112,16 +111,16 @@ func main() {
 			repoName,
 			ru.Data.Webhook.Repository.Rev.ID,
 		)
-		msgs := strings.Split(ru.Data.Webhook.Repository.Rev.Message, "\n")
+		/* msgs := strings.Split(ru.Data.Webhook.Repository.Rev.Message, "\n")
 		msg := ""
 		if len(msgs) > 0 {
 			msg = msgs[0]
-		}
+		} */
 		bot.Msg(toChannel, fmt.Sprintf(
-			"[sr.ht] %s -- (%s) %s",
+			"[sr.ht] %s",
 			url,
-			ru.Data.Webhook.Repository.Rev.Committer.Name,
-			msg,
+			// ru.Data.Webhook.Repository.Rev.Committer.Name,
+			// msg,
 		))
 	})
 
