@@ -42,5 +42,5 @@ push-picobot:
 bp-picobot: build-picobot push-picobot
 .PHONY: bp-picobot
 
-bp: bp-irc bp-chat bp-bot bp-picobot
+bp: bp-irc bp-chat bp-bot
 .PHONY: bp
