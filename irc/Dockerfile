@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine as builder
+FROM golang:1.19-alpine as builder
 
 WORKDIR /app
 
@@ -8,11 +8,11 @@ RUN git clone https://github.com/emersion/soju
 
 WORKDIR /app/soju
 
-ENV CGO_ENABLED=1
 ENV LDFLAGS="-linkmode external -extldflags -static"
+ENV GOFLAGS="-tags=moderncsqlite"
 
-RUN go build -ldflags "$LDFLAGS" -tags sqlite_omit_load_extension ./cmd/soju
-RUN go build -ldflags "$LDFLAGS" -tags sqlite_omit_load_extension ./cmd/sojuctl
+RUN go build -ldflags "$LDFLAGS" ./cmd/soju
+RUN go build -ldflags "$LDFLAGS" ./cmd/sojuctl
 
 FROM alpine
 
