@@ -1,35 +1,41 @@
+DOCKER_CMD?=podman
+REGISTRY?=registry.erock.io
+
+setup:
+	$(DOCKER_CMD) tag erock-irc $(REGISTRY)/erock-irc
+	$(DOCKER_CMD) tag erock-chat $(REGISTRY)/erock-chat
+	$(DOCKER_CMD) tag erock-bot $(REGISTRY)/erock-bot
+.PHONY: setup
+
 build-irc:
-	docker build -t neurosnap/erock-irc -f ./irc/Dockerfile ./irc
+	$(DOCKER_CMD) build -t erock-irc -f ./irc/Dockerfile ./irc
 .PHONY: build
 
 push-irc:
-	docker push neurosnap/erock-irc
+	$(DOCKER_CMD) push $(REGISTRY)/erock-irc
 .PHONY: push
 
-bp-irc: build-irc push-irc
-.PHONY: bp-irc
-
 build-chat:
-	docker build -t neurosnap/erock-chat -f ./chat/Dockerfile ./chat
+	$(DOCKER_CMD) build -t erock-chat -f ./chat/Dockerfile ./chat
 .PHONY: build-chat
 
 push-chat:
-	docker push neurosnap/erock-chat
+	$(DOCKER_CMD) push $(REGISTRY)/erock-chat
 .PHONY: push-chat
 
-bp-chat: build-chat push-chat
-.PHONY: bp-chat
-
 build-bot:
-	docker build -t neurosnap/erock-bot -f ./bot/Dockerfile ./bot
+	$(DOCKER_CMD) build -t erock-bot -f ./bot/Dockerfile ./bot
 .PHONY: build-bot
 
 push-bot:
-	docker push neurosnap/erock-bot
+	$(DOCKER_CMD) push $(REGISTRY)/erock-bot
 .PHONY: push-bot
 
-bp-bot: build-bot push-bot
-.PHONY: bp-bot
+build: build-irc build-chat build-bot
+.PHONY: build
 
-bp: bp-irc bp-chat bp-bot
+push: push-irc push-chat push-bot
+.PHONY: push
+
+bp: build push
 .PHONY: bp
