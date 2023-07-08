@@ -8,7 +8,7 @@ setup:
 .PHONY: setup
 
 build-irc:
-	$(DOCKER_CMD) build -t erock-irc -f ./irc/Dockerfile ./irc
+	$(DOCKER_CMD) build -t $(REGISTRY)/erock-irc -f ./irc/Dockerfile ./irc
 .PHONY: build
 
 push-irc:
@@ -16,7 +16,7 @@ push-irc:
 .PHONY: push
 
 build-chat:
-	$(DOCKER_CMD) build -t erock-chat -f ./chat/Dockerfile ./chat
+	$(DOCKER_CMD) build -t $(REGISTRY)/erock-chat -f ./chat/Dockerfile ./chat
 .PHONY: build-chat
 
 push-chat:
@@ -24,7 +24,7 @@ push-chat:
 .PHONY: push-chat
 
 build-bot:
-	$(DOCKER_CMD) build -t erock-bot -f ./bot/Dockerfile ./bot
+	$(DOCKER_CMD) build -t $(REGISTRY)/erock-bot -f ./bot/Dockerfile ./bot
 .PHONY: build-bot
 
 push-bot:
