@@ -22,4 +22,7 @@ ADD ./soju.config .
 COPY --from=builder /app/soju/soju .
 COPY --from=builder /app/soju/sojuctl .
 
+EXPOSE 6697
+EXPOSE 8080
+
 ENTRYPOINT ["/app/soju", "-config", "/app/soju.config"]
