@@ -14,7 +14,7 @@ import (
 
 var (
 	keywords = []string{"erock", "pico.sh", "picosh"}
-	dms      = []string{"erock", "#pico.sh"}
+	dms      = []string{"erock", "#pico.sh", "#pico.sh-op"}
 	deny     = []string{"erock", "SaslServ", "NickServ", "ChanServ", "irc.pico.sh"}
 )
 
