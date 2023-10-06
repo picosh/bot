@@ -15,7 +15,7 @@ import (
 var (
 	keywords = []string{"erock", "pico.sh", "picosh"}
 	dms      = []string{"erock", "#pico.sh"}
-	deny     = []string{"erock", "SaslServ", "NickServ", "ChanServ", "irc.erock.io"}
+	deny     = []string{"erock", "SaslServ", "NickServ", "ChanServ", "irc.pico.sh"}
 )
 
 func resetTimer() time.Time {
@@ -76,7 +76,7 @@ func main() {
 		bot.Password = ircPass
 	}
 
-	bot, err := hbot.NewBot("irc.erock.io:6697", "erock/irc.libera.chat@bot", saslOption)
+	bot, err := hbot.NewBot("irc.pico.sh:6697", "erock/irc.libera.chat@bot", saslOption)
 	if err != nil {
 		panic(err)
 	}

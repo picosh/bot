@@ -1,9 +1,0 @@
-{
-	"server": {
-		"url": "wss://irc.erock.io",
-		"autojoin": "#pico.sh",
-		"auth": "optional",
-		"autoconnect": true,
-		"ping": 60
-	}
-}
