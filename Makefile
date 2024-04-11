@@ -1,5 +1,5 @@
 DOCKER_CMD?=docker
-REGISTRY?=localhost:5000
+REGISTRY?=localhost:1338
 
 setup:
 	$(DOCKER_CMD) tag erock-bot $(REGISTRY)/erock-bot
