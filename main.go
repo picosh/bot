@@ -18,8 +18,8 @@ var (
 	toEmail    = "irc@erock.io"
 	emailLogin = "me@erock.io"
 	smtpAddr   = "smtp.fastmail.com:587"
-	botNick    = "erock/irc.libera.chat@bot"
-	ircHost    = "irc.pico.sh:6697"
+	botNick    = "erock/irc.libera.chat@bot-tmp"
+	ircHost    = "irc.picos.sh:6697"
 	keywords   = []string{"erock", "pico.sh", "picosh"}
 	dms        = []string{"erock", "#pico.sh", "#pico.sh-ops", "#pico.sh-+"}
 	deny       = []string{"erock", "SaslServ", "NickServ", "ChanServ", "irc.pico.sh"}
@@ -47,7 +47,7 @@ func send(auth sasl.Client, subject string, body string) {
 		msg,
 	)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 }
 
@@ -58,7 +58,7 @@ func msgToEmail(m hbot.Message) string {
 	}
 
 	body := fmt.Sprintf(
-		"%s\r\n---\r\nirc://irc.libera.chat/%s\r\nfrom: %s\r\nto: %s",
+		"%s\r\n---\r\n%s\r\nfrom: %s\r\nto: %s",
 		m.Content,
 		channel,
 		m.From,
@@ -85,7 +85,8 @@ func main() {
 
 	bot, err := hbot.NewBot(ircHost, botNick, saslOption)
 	if err != nil {
-		panic(err)
+		bot.Error(err.Error())
+		return
 	}
 	// remove default channels from bot since I'm connecting to a bouncer
 	bot.Channels = []string{}
@@ -189,5 +190,7 @@ func main() {
 	bot.AddTrigger(notify)
 	bot.AddTrigger(away)
 	bot.Run()
+	// send email when bot shuts down which could mean our bouncer is shutdown
+	send(auth, "irc bot shutdown", "irc bot shutdown!")
 	fmt.Println("Bot shutting down.")
 }

@@ -12,6 +12,6 @@ RUN apt-get update && apt-get install -y ca-certificates
 
 WORKDIR /app
 
-COPY --from=builder /app/bot .
+COPY --from=builder /app/erock-irc .
 
-ENTRYPOINT ["/app/bot"]
+ENTRYPOINT ["/app/erock-irc"]
