@@ -13,9 +13,16 @@ import (
 )
 
 var (
-	keywords = []string{"erock", "pico.sh", "picosh"}
-	dms      = []string{"erock", "#pico.sh", "#pico.sh-ops", "#pico.sh-+"}
-	deny     = []string{"erock", "SaslServ", "NickServ", "ChanServ", "irc.pico.sh"}
+	awayNick   = "erock"
+	fromEmail  = "bot@erock.io"
+	toEmail    = "irc@erock.io"
+	emailLogin = "me@erock.io"
+	smtpAddr   = "smtp.fastmail.com:587"
+	botNick    = "erock/irc.libera.chat@bot"
+	ircHost    = "irc.pico.sh:6697"
+	keywords   = []string{"erock", "pico.sh", "picosh"}
+	dms        = []string{"erock", "#pico.sh", "#pico.sh-ops", "#pico.sh-+"}
+	deny       = []string{"erock", "SaslServ", "NickServ", "ChanServ", "irc.pico.sh"}
 )
 
 func resetTimer() time.Time {
@@ -25,17 +32,17 @@ func resetTimer() time.Time {
 }
 
 func send(auth sasl.Client, subject string, body string) {
-	to := []string{"irc@erock.io"}
-	content := "From: bot@erock.io\r\n" +
-		"To: irc@erock.io\r\n" +
+	to := []string{toEmail}
+	content := fmt.Sprintf("From: %s\r\n", fromEmail) +
+		fmt.Sprintf("To: %s\r\n", toEmail) +
 		fmt.Sprintf("Subject: %s\r\n", subject) +
 		"\r\n" +
 		fmt.Sprintf("%s\r\n", body)
 	msg := strings.NewReader(content)
 	err := smtp.SendMail(
-		"smtp.fastmail.com:587",
+		smtpAddr,
 		auth,
-		"bot@erock.io",
+		fromEmail,
 		to,
 		msg,
 	)
@@ -64,7 +71,7 @@ func msgToEmail(m hbot.Message) string {
 func main() {
 	ircPass := os.Getenv("IRC_PASS")
 	smtPass := os.Getenv("IRC_SMTP_PASS")
-	auth := sasl.NewPlainClient("", "me@erock.io", smtPass)
+	auth := sasl.NewPlainClient("", emailLogin, smtPass)
 
 	timer := resetTimer()
 	isAway := false
@@ -76,7 +83,7 @@ func main() {
 		bot.Password = ircPass
 	}
 
-	bot, err := hbot.NewBot("irc.pico.sh:6697", "erock/irc.libera.chat@bot", saslOption)
+	bot, err := hbot.NewBot(ircHost, botNick, saslOption)
 	if err != nil {
 		panic(err)
 	}
@@ -161,7 +168,7 @@ func main() {
 
 	away := hbot.Trigger{
 		Condition: func(b *hbot.Bot, m *hbot.Message) bool {
-			return m.From == "erock"
+			return m.From == awayNick
 		},
 		Action: func(b *hbot.Bot, m *hbot.Message) bool {
 			timer = resetTimer()

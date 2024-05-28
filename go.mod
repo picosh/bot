@@ -1,4 +1,4 @@
-module git.sr.ht/~erock/erock-irc/bot
+module git.sr.ht/~erock/erock-irc
 
 go 1.18
 
