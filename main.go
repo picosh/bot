@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -69,6 +71,7 @@ func msgToEmail(m hbot.Message) string {
 }
 
 func main() {
+	ircSecret := os.Getenv("IRC_SECRET")
 	ircPass := os.Getenv("IRC_PASS")
 	smtPass := os.Getenv("IRC_SMTP_PASS")
 	auth := sasl.NewPlainClient("", emailLogin, smtPass)
@@ -185,11 +188,49 @@ func main() {
 		},
 	}
 
-	logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
-	bot.Logger.SetHandler(logHandler)
-	bot.AddTrigger(notify)
-	bot.AddTrigger(away)
-	bot.Run()
+	// Start an http server that sends a message to a user based on the body
+	http.HandleFunc("POST /send", func(w http.ResponseWriter, r *http.Request) {
+		auth := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+		if auth != ircSecret {
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		err := r.ParseForm()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		to := r.FormValue("to")
+		message := r.FormValue("message")
+		if to == "" || message == "" {
+			http.Error(w, "missing required params", http.StatusBadRequest)
+			return
+		}
+
+		bot.Msg(to, message)
+		w.WriteHeader(http.StatusOK)
+	})
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go func() {
+		http.ListenAndServe(":8080", nil)
+		cancel()
+	}()
+
+	go func() {
+		logHandler := log.LvlFilterHandler(log.LvlInfo, log.StdoutHandler)
+		bot.Logger.SetHandler(logHandler)
+		bot.AddTrigger(notify)
+		bot.AddTrigger(away)
+		bot.Run()
+		cancel()
+	}()
+
+	<-ctx.Done()
+
 	// send email when bot shuts down which could mean our bouncer is shutdown
 	send(auth, "irc bot shutdown", "irc bot shutdown!")
 	fmt.Println("Bot shutting down.")
