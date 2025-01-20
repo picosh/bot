@@ -188,8 +188,10 @@ func main() {
 		},
 	}
 
+	mux := http.NewServeMux()
+
 	// Start an http server that sends a message to a user based on the body
-	http.HandleFunc("/send", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/send", func(w http.ResponseWriter, r *http.Request) {
 		auth := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 		if auth != ircSecret {
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
@@ -216,7 +218,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go func() {
-		http.ListenAndServe(":8080", nil)
+		http.ListenAndServe(":8080", mux)
 		cancel()
 	}()
 
