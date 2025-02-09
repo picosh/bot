@@ -234,6 +234,6 @@ func main() {
 	<-ctx.Done()
 
 	// send email when bot shuts down which could mean our bouncer is shutdown
-	send(auth, "irc bot shutdown", "irc bot shutdown!")
+	// send(auth, "irc bot shutdown", "irc bot shutdown!")
 	fmt.Println("Bot shutting down.")
 }
